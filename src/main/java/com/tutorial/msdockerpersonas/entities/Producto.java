@@ -2,19 +2,15 @@ package com.tutorial.msdockerpersonas.entities;
 
 import com.tutorial.msdockerpersonas.entities.base.BaseEntity;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import lombok.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "personas")
 @Data
 @NoArgsConstructor
-public class Persona extends BaseEntity {
+public class Producto extends BaseEntity {
 
     private String nombre;
-    private Long edad;
-    private String direccion;
-    private String telefono;
-
-
+    private String descripcion;
+    private Double precio;
 }

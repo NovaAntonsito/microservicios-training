@@ -1,5 +1,7 @@
 package com.tutorial.msdockerpersonas.services.Base;
 
+import com.tutorial.msdockerpersonas.controllers.exceptions.DatabaseEmptyException;
+import com.tutorial.msdockerpersonas.controllers.exceptions.ResourceNotFoundException;
 import com.tutorial.msdockerpersonas.entities.base.BaseEntity;
 import com.tutorial.msdockerpersonas.repositories.base.baseRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -19,19 +21,16 @@ public class baseService <E extends BaseEntity, ID extends Serializable> impleme
     public baseService(baseRepository<E, ID> BaseRepository) {
         this.BaseRepository = BaseRepository;
     }
+
+
     @Override
     @Transactional
-    public List<E> findAll() throws Exception {
-        try {
-            if(!BaseRepository.findAll().isEmpty()){
-                return BaseRepository.findAll();
-            }
-            throw new Exception("La base de datos esta vacia");
-        }catch (Exception e) {
-            log.info(e.getMessage());
-            throw new Exception(e.getMessage());
+    public List<E> findAll() throws DatabaseEmptyException {
+        List<E> entities = BaseRepository.findAll();
+        if (entities.isEmpty()) {
+            throw new DatabaseEmptyException("No hay registros en la base de datos");
         }
-
+        return entities;
     }
 
     @Override
@@ -47,9 +46,10 @@ public class baseService <E extends BaseEntity, ID extends Serializable> impleme
 
     @Override
     @Transactional
-    public E findById(ID id) throws Exception {
+    public E findById(ID id) throws ResourceNotFoundException {
         Optional<E> entityOptional = BaseRepository.findById(id);
-        return entityOptional.orElseThrow(() -> new Exception("No se encontro registro"));
+        log.info("Entity: " + entityOptional);
+        return entityOptional.orElseThrow(() -> new ResourceNotFoundException("No se encontro registro"));
     }
 
     @Override
@@ -90,6 +90,13 @@ public class baseService <E extends BaseEntity, ID extends Serializable> impleme
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
+    }
+
+    @Transactional
+    @Override
+    public boolean isPresent(ID id){
+        Optional<E> entityOptional = BaseRepository.findById(id);
+        return entityOptional.isPresent();
     }
 
 }

@@ -1,6 +1,17 @@
 package com.tutorial.msdockerpersonas.controllers.exceptions;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Date;
 
-public record ErrorDetails(Date timestamp, String message, String details) {
+@Getter
+@Setter
+@AllArgsConstructor
+public class ErrorDetails {
+
+    private Date date;
+    private String message;
+    private String details;
 }

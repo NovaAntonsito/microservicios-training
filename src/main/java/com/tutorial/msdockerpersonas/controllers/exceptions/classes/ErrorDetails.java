@@ -1,4 +1,4 @@
-package com.tutorial.msdockerpersonas.controllers.exceptions;
+package com.tutorial.msdockerpersonas.controllers.exceptions.classes;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -48,7 +48,6 @@ public class baseService <E extends BaseEntity, ID extends Serializable> impleme
     @Transactional
     public E findById(ID id) throws ResourceNotFoundException {
         Optional<E> entityOptional = BaseRepository.findById(id);
-        log.info("Entity: " + entityOptional);
         return entityOptional.orElseThrow(() -> new ResourceNotFoundException("No se encontro registro"));
     }
 

@@ -8,4 +8,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface personaRepository extends baseRepository<Persona, Long> {
 
+    boolean existsByNombreAndDNI(String nombre, Integer dni);
+
+    Persona getByID(Long id);
+
+    boolean existsByID(Long id);
+
 }

@@ -2,13 +2,18 @@ package com.tutorial.msdockerpersonas.controllers;
 
 
 import com.tutorial.msdockerpersonas.controllers.exceptions.DatabaseEmptyException;
+import com.tutorial.msdockerpersonas.controllers.exceptions.DuplicatedDataException;
 import com.tutorial.msdockerpersonas.controllers.exceptions.ResourceNotFoundException;
+import com.tutorial.msdockerpersonas.entities.Persona;
 import com.tutorial.msdockerpersonas.services.personaService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+
+@SuppressWarnings("ALL")
 @Slf4j
 @RestController
 @RequestMapping("v1/api/persona")
@@ -20,19 +25,48 @@ public class personaController {
 
     @GetMapping("/all")
     public ResponseEntity<?> getAllPersonas() {
-        if(personaService.findAll().isEmpty()){
+        if (personaService.findAll().isEmpty()) {
             throw new DatabaseEmptyException("No hay registros en la base de datos");
         }
         return ResponseEntity.ok(personaService.findAll());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getPersonaByID (@PathVariable(value = "id") Long id) {
-            if(!personaService.isPresent(id)){
-                throw new ResourceNotFoundException("No se encontro registro");
-            }
+    @GetMapping("/data")
+    public ResponseEntity<?> getPersonaByID(@RequestParam(value = "id") Long id) {
+        if (!personaService.isPresent(id)) {
+            throw new ResourceNotFoundException("No se encontro registro");
+        }
         return ResponseEntity.ok(personaService.findById(id));
     }
 
+    @PostMapping("/create")
+    public ResponseEntity<?> createPersona(@RequestBody Persona persona) throws Exception {
+        try {
+            personaService.isDuplicated(persona);
+            personaService.save(persona);
+        } catch (DuplicatedDataException e) {
+            throw new DuplicatedDataException("Ya existe una persona con ese documento " + persona.getDNI());
+        }
+        return ResponseEntity.ok(new HashMap() {
+            {
+                put("message", "Persona creada");
+            }
+        });
+    }
 
-}
+    @PutMapping("/update")
+    public ResponseEntity<?> updateWholePersona(@RequestBody Persona persona) throws Exception {
+        if (!personaService.isDuplicated(persona)) {
+            {
+                throw new ResourceNotFoundException("No se encontro registro");
+            }
+            personaService.save(persona);
+            return ResponseEntity.ok(new HashMap() {
+                {
+                    put("message", "Persona actualizada");
+                }
+            });
+        }
+
+    }
+

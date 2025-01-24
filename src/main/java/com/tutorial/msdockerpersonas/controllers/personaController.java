@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 
-@SuppressWarnings("ALL")
+
 @Slf4j
 @RestController
 @RequestMapping("v1/api/persona")
@@ -55,18 +55,19 @@ public class personaController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<?> updateWholePersona(@RequestBody Persona persona) throws Exception {
-        if (!personaService.isDuplicated(persona)) {
-            {
-                throw new ResourceNotFoundException("No se encontro registro");
-            }
-            personaService.save(persona);
-            return ResponseEntity.ok(new HashMap() {
-                {
-                    put("message", "Persona actualizada");
-                }
-            });
+    public ResponseEntity<?> updatePersona (@RequestBody Persona persona, @RequestParam(value = "id") Long id) throws ResourceNotFoundException {
+        if (!personaService.isPresent(id)) {
+            throw new ResourceNotFoundException("No se encontro registro");
         }
-
+        personaService.update(id, persona);
+        return ResponseEntity.ok(new HashMap() {
+            {
+                put("message", "Persona actualizada");
+            }
+        });
     }
+
+
+
+}
 

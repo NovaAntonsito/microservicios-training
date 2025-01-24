@@ -2,7 +2,6 @@ package com.tutorial.msdockerpersonas.services;
 
 
 import com.tutorial.msdockerpersonas.controllers.exceptions.DuplicatedDataException;
-import com.tutorial.msdockerpersonas.controllers.exceptions.ResourceNotFoundException;
 import com.tutorial.msdockerpersonas.entities.Persona;
 import com.tutorial.msdockerpersonas.repositories.base.baseRepository;
 import com.tutorial.msdockerpersonas.services.Base.baseService;
@@ -27,14 +26,6 @@ public class personaService extends baseService<Persona, Long> implements IPerso
             throw new DuplicatedDataException("Ya existe una persona con ese documento " + persona.getDNI());
         }
         return false;
-    }
-
-    @Override
-    public Persona updatePersona (Persona persona, Long id) throws ResourceNotFoundException {
-        if (personaRepository.existsByID(id)){
-            return personaRepository.save(persona);
-        }
-        throw new ResourceNotFoundException("No se encontro registro");
     }
 
 

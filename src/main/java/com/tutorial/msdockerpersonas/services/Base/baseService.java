@@ -4,6 +4,7 @@ import com.tutorial.msdockerpersonas.controllers.exceptions.DatabaseEmptyExcepti
 import com.tutorial.msdockerpersonas.controllers.exceptions.ResourceNotFoundException;
 import com.tutorial.msdockerpersonas.entities.base.BaseEntity;
 import com.tutorial.msdockerpersonas.repositories.base.baseRepository;
+import com.tutorial.msdockerpersonas.services.Utils.PersistenceUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
+
+
 
 @Slf4j
 public class baseService <E extends BaseEntity, ID extends Serializable> implements IBaseService<E, ID> {
@@ -61,17 +64,20 @@ public class baseService <E extends BaseEntity, ID extends Serializable> impleme
             throw new Exception(e.getMessage());
         }
     }
-
     @Override
     @Transactional
-    public E update(ID id, E entity) throws Exception {
+    public E update(ID id, E entity) throws ResourceNotFoundException {
         try {
             Optional<E> entityOptional = BaseRepository.findById(id);
-            E persona = entityOptional.get();
-            persona = BaseRepository.save(entity);
-            return persona;
+            if (entityOptional.isPresent()) {
+                E existingEntity = entityOptional.get();
+                PersistenceUtils.partialUpdate(existingEntity, entity);
+                return BaseRepository.save(existingEntity);
+            } else {
+                throw new ResourceNotFoundException("No se encontro el registro");
+            }
         } catch (Exception e) {
-            throw new Exception(e.getMessage());
+            throw new ResourceNotFoundException("No se encontro el registro");
         }
     }
 

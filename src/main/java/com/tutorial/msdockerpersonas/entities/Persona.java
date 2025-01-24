@@ -18,7 +18,7 @@ public class Persona extends BaseEntity {
     private String direccion;
     private String telefono;
     @Column(unique = true)
-    private Integer DNI;
+    private String DNI;
 
 
 }

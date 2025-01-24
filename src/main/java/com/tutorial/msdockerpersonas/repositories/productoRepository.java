@@ -6,4 +6,10 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface productoRepository extends baseRepository<Producto, Long> {
+
+    Producto getByID(Long id);
+
+    boolean existsByID(Long id);
+
+    boolean existsByNombre(String nombre);
 }

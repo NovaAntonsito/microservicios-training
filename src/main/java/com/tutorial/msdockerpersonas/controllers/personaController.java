@@ -67,6 +67,19 @@ public class personaController {
         });
     }
 
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> delete(@RequestParam Long id) throws ResourceNotFoundException {
+        if(!personaService.isPresent(id)){
+            throw new ResourceNotFoundException("No se encontro el registro");
+        }
+        personaService.delete(id);
+        return ResponseEntity.ok(new HashMap() {
+            {
+                put("message", "Persona eliminada");
+            }
+        });
+
+    }
 
 
 }

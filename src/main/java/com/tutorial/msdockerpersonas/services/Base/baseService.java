@@ -83,17 +83,15 @@ public class baseService <E extends BaseEntity, ID extends Serializable> impleme
 
     @Override
     @Transactional
-    public boolean delete(ID id) throws Exception {
+    public boolean delete(ID id) throws ResourceNotFoundException {
         try {
             if (BaseRepository.existsById(id)){
                 BaseRepository.deleteById(id);
                 return true;
-            }else{
-                throw new Exception();
             }
-
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
+            throw new ResourceNotFoundException("No se encontro el registro");
+        } catch (ResourceNotFoundException e) {
+            throw new ResourceNotFoundException("No se encontro el registro");
         }
     }
 
